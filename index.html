@@ -69,6 +69,26 @@ footer a{color:#dbe7f4}
 .member p{font-size:.96rem;color:var(--muted)}
 .member .tags{margin-top:10px}
 .member .tags span{display:inline-block;font-family:'Segoe UI',sans-serif;font-size:.72rem;color:var(--blue);background:#eef4fb;border:1px solid var(--line);border-radius:20px;padding:3px 10px;margin:3px 6px 0 0}
+.req-btn{display:inline-block;margin-top:16px;background:var(--blue);color:#fff;font-family:'Segoe UI',sans-serif;font-weight:700;font-size:.85rem;border:none;border-radius:6px;padding:11px 20px;cursor:pointer;transition:background .15s}
+.req-btn:hover{background:var(--accent)}
+.req-btn::before{content:"\2709  "}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(8,20,35,.65);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;max-width:470px;width:100%;padding:30px 32px;font-family:'Segoe UI',Helvetica,Arial,sans-serif;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.modal h3{color:var(--navy);font-size:1.32rem;margin-bottom:4px}
+.modal .sub{color:var(--muted);font-size:.9rem;margin-bottom:14px;line-height:1.5}
+.modal label{display:block;font-size:.78rem;font-weight:700;color:var(--ink);margin:13px 0 4px;text-transform:uppercase;letter-spacing:.4px}
+.modal input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font-size:.95rem;font-family:inherit;color:var(--ink)}
+.modal input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,111,184,.15)}
+.modal .actions{margin-top:22px;display:flex;gap:10px;justify-content:flex-end}
+.modal .btn-cancel{background:#eef1f6;color:var(--ink);border:none;border-radius:6px;padding:11px 18px;font-weight:600;cursor:pointer;font-family:inherit;font-size:.9rem}
+.modal .btn-send{background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:11px 22px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.9rem}
+.modal .btn-send:disabled{opacity:.6;cursor:default}
+.modal .msg{margin-top:14px;font-size:.9rem;line-height:1.5}
+.modal .msg.ok{color:#1d7a4d;font-weight:600}
+.modal .msg.err{color:var(--red)}
+.modal .doc-tag{display:inline-block;background:#eef4fb;color:var(--blue);border-radius:6px;padding:3px 11px;font-size:.74rem;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.modal .privacy{margin-top:12px;font-size:.74rem;color:var(--muted)}
 @media(max-width:760px){
   .member{flex-direction:column;gap:12px}
   .stats{grid-template-columns:repeat(2,1fr)}
@@ -231,26 +251,142 @@ footer a{color:#dbe7f4}
     <div class="member">
       <div class="avatar">VS</div>
       <div class="m-body">
-        <h3>Vitaliy Sizov</h3>
+        <h3>Vitaliy Syzov</h3>
         <div class="role">Founder &amp; Director</div>
-        <p>Brussels-based broadcast journalist accredited to the European Union institutions and a correspondent for FREEDOM, the international broadcasting platform of the State Enterprise “Multimedia Platform for Foreign Broadcasting of Ukraine.” He reports daily on EU affairs, transatlantic security and economic policy, energy, and the information environment, and specializes in identifying foreign information manipulation that targets Euro-Atlantic unity. He founded the Transatlantic Truth Lab to pair rigorous, sourced research with the speed and clarity of broadcast journalism. <em>[Add years of experience, languages (EN/FR/UK/RU), and selected work.]</em></p>
+        <p>Brussels-based broadcast journalist accredited to the European Union institutions and a correspondent for FREEDOM, the international broadcasting platform of the State Enterprise “Multimedia Platform for Foreign Broadcasting of Ukraine.” He reports daily on EU affairs, transatlantic security and economic policy, energy, and the information environment, and specializes in identifying foreign information manipulation that targets Euro-Atlantic unity. He founded the Transatlantic Truth Lab to pair rigorous, sourced research with the speed and clarity of broadcast journalism.</p>
         <div class="tags"><span>EU affairs</span><span>Disinformation analysis</span><span>Energy &amp; security</span><span>Broadcast &amp; digital</span></div>
       </div>
     </div>
   </div>
-  <p class="intro" style="margin-top:14px">Our work is supported by a network of contributors — data-visualization designers, video editors, translators (EN/FR/DE), and open-source (OSINT) analysts — and by cooperating partners across Brussels press, think-tank, and business communities. <em>[Add additional team members and advisors here as the center grows.]</em></p>
+  <p class="intro" style="margin-top:14px">Our work is supported by a network of contributors — data-visualization designers, video editors, translators (EN/FR/DE), and open-source (OSINT) analysts — and by cooperating partners across Brussels press, think-tank, and business communities.</p>
 </div></section>
 
 <footer><div class="wrap">
   <div>
     <strong style="color:#fff;font-family:'Segoe UI',sans-serif">Transatlantic Truth Lab</strong><br>
-    An independent public-diplomacy initiative · Brussels, EU<br>
-    Contact: <a href="mailto:[email]">[email]</a>
+    An independent analytical center · Brussels, EU
   </div>
   <div style="max-width:440px;font-size:.82rem">
     An independent analytical center. Research briefs reflect public EU and U.S. data; sources are listed with each brief. © 2026 Transatlantic Truth Lab.
   </div>
 </div></footer>
+
+<!-- Document request modal -->
+<div class="modal-overlay" id="reqModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="doc-tag" id="reqDocTag">Analytical document</div>
+    <h3>Request the full briefing</h3>
+    <div class="sub">Tell us who you are and we will send the analytical document (PDF, English) to your email. We review every request.</div>
+    <form id="reqForm">
+      <label for="reqName">Full name</label>
+      <input id="reqName" name="name" required autocomplete="name">
+      <label for="reqOrg">Organization</label>
+      <input id="reqOrg" name="organization" required autocomplete="organization">
+      <label for="reqEmail">Email</label>
+      <input id="reqEmail" type="email" name="email" required autocomplete="email">
+      <input type="hidden" name="document" id="reqDocField">
+      <div class="actions">
+        <button type="button" class="btn-cancel" id="reqCancel">Cancel</button>
+        <button type="submit" class="btn-send" id="reqSend">Send request</button>
+      </div>
+      <div class="msg" id="reqMsg" aria-live="polite"></div>
+      <div class="privacy">Your details are used only to fulfil and log this request.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ===== CONFIG — edit these two lines ===== */
+  var CONTACT_EMAIL = "alex.mazuka@gmail.com";            // where requests are received (mailto fallback)
+  var WEB3FORMS_KEY = "REPLACE_WITH_WEB3FORMS_ACCESS_KEY"; // free key from https://web3forms.com → requests arrive in your inbox
+  /* ========================================= */
+
+  var modal = document.getElementById('reqModal');
+  var form = document.getElementById('reqForm');
+  var docTag = document.getElementById('reqDocTag');
+  var docField = document.getElementById('reqDocField');
+  var msg = document.getElementById('reqMsg');
+  var sendBtn = document.getElementById('reqSend');
+
+  // Add a request button to every research brief
+  document.querySelectorAll('.study').forEach(function(card){
+    var titleEl = card.querySelector('h3');
+    var title = titleEl ? titleEl.textContent.trim() : 'Analytical document';
+    var btn = document.createElement('button');
+    btn.className = 'req-btn';
+    btn.type = 'button';
+    btn.textContent = 'Request this briefing (PDF, English)';
+    btn.addEventListener('click', function(){ openModal(title); });
+    var sources = card.querySelector('.sources');
+    if (sources) sources.parentNode.insertBefore(btn, sources); else card.appendChild(btn);
+  });
+
+  function openModal(title){
+    docField.value = title;
+    docTag.textContent = title;
+    msg.textContent = ''; msg.className = 'msg';
+    form.reset(); docField.value = title;
+    sendBtn.disabled = false; sendBtn.textContent = 'Send request';
+    modal.classList.add('open');
+  }
+  function closeModal(){ modal.classList.remove('open'); }
+
+  document.getElementById('reqCancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = form.name.value.trim();
+    var org = form.organization.value.trim();
+    var email = form.email.value.trim();
+    var docName = docField.value;
+    if(!name || !org || !email){ return; }
+
+    var keyConfigured = WEB3FORMS_KEY && WEB3FORMS_KEY.indexOf('REPLACE_WITH') === -1;
+
+    if(keyConfigured){
+      sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
+      fetch('https://api.web3forms.com/submit', {
+        method:'POST',
+        headers:{'Content-Type':'application/json', Accept:'application/json'},
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'Document request: ' + docName,
+          from_name: 'Transatlantic Truth Lab — website',
+          name: name, organization: org, email: email, document: docName
+        })
+      }).then(function(r){ return r.json(); })
+        .then(function(d){
+          if(d.success){
+            msg.className = 'msg ok';
+            msg.textContent = 'Thank you, ' + name + '. Your request has been received — we will email the document to ' + email + '.';
+            form.querySelectorAll('input').forEach(function(i){ i.disabled = true; });
+            sendBtn.style.display = 'none';
+          } else { throw new Error('failed'); }
+        })
+        .catch(function(){
+          msg.className = 'msg err';
+          msg.textContent = 'Something went wrong. Please email us directly at ' + CONTACT_EMAIL + '.';
+          sendBtn.disabled = false; sendBtn.textContent = 'Send request';
+        });
+    } else {
+      // Fallback: open the visitor's mail client prefilled to CONTACT_EMAIL
+      var subject = encodeURIComponent('Document request: ' + docName);
+      var body = encodeURIComponent(
+        'Document requested: ' + docName + '\n\n' +
+        'Full name: ' + name + '\n' +
+        'Organization: ' + org + '\n' +
+        'Email: ' + email + '\n'
+      );
+      window.location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + subject + '&body=' + body;
+      msg.className = 'msg ok';
+      msg.textContent = 'Opening your email app to send the request. If nothing opens, email ' + CONTACT_EMAIL + ' directly.';
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
